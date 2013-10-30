@@ -12,6 +12,7 @@ import argparse
 def analyzeLog(log):
 	totalgccount=shortgccount=fullgccount=0
 	totalgctime=shortgctime=fullgctime=0
+	longestshortgc=longestfullgc=0
 	apptime=previoustime=0
 
 	with open(log) as f:
@@ -31,9 +32,13 @@ def analyzeLog(log):
 					if line.find("[GC") != -1:
 						shortgccount += 1
 						shortgctime += time
+						if time > longestshortgc:
+							longestshortgc = time
 					if line.find("[Full GC") != -1:
 						fullgccount += 1
 						fullgctime += time
+						if time > longestfullgc:
+							longestfullgc = time
 
 					if previoustime != 0:
 						if previoustime < currenttime:
@@ -43,10 +48,11 @@ def analyzeLog(log):
 							apptime += currenttime
 					previoustime = currenttime
 
+
 				
 			except Exception as e:
-				print "Error processing line: " + line
-				print e
+				print >> sys.stderr, "Error processing line: " + line
+				print >> sys.stderr, e
 
 
 	efficency = "{0:.4f}".format(1 - (totalgctime/apptime))
@@ -64,6 +70,7 @@ def analyzeLog(log):
 		shortgcavg = "0"
 	shortgctime = "{0:.4f}".format(shortgctime)
 	shortgccount = str(shortgccount)
+	longestshortgc = str(longestshortgc)
 
 	
 	if fullgccount != 0:
@@ -72,19 +79,21 @@ def analyzeLog(log):
 		fullgcavg = "0"
 	fullgctime = "{0:.4f}".format(fullgctime)
 	fullgccount = str(fullgccount)
+	longestfullgc = str(longestfullgc)
 
 	apptime = "{0:.4f}".format(apptime)
 	
 	if args.csv:
-		print log + ";" + efficency + ";" + apptime + ";" + totalgccount + ";" + totalgctime + ";" + totalgcavg + ";" + shortgccount + ";" + shortgctime + ";" + shortgcavg + ";" + fullgccount + ";" + fullgctime + ";" + fullgcavg + ";"
+		print log + ";" + efficency + ";" + apptime + ";" + totalgccount + ";" + totalgctime + ";" + totalgcavg + ";" + shortgccount + ";" + shortgctime + ";" + shortgcavg + ";" + longestshortgc + ";" + fullgccount + ";" + fullgctime + ";" + fullgcavg + ";" + longestfullgc
 
 	else:
 		print "Log: " + log
 		print "Application execution time = " + apptime + " secs"
 		print "Efficency = " + efficency + "%"
-		print "Total GC:    Count = " + totalgccount.ljust(8) + " Total time = " + totalgctime + " secs".ljust(8) + " Average time = " + totalgcavg + " secs".ljust(8)
-		print "Short GC:    Count = " + shortgccount.ljust(8) + " Total time = " + shortgctime + " secs".ljust(8) + " Average time = " + shortgcavg + " secs".ljust(8)
-		print "Full GC:     Count = " + fullgccount.ljust(8) + " Total time = " + fullgctime + " secs".ljust(8) + " Average time = " + fullgcavg + " secs".ljust(8)
+		print "Total GC:    Count = " + totalgccount.ljust(8) + " Total time = " + totalgctime + " secs".ljust(10) + " Average time = " + totalgcavg + " secs".ljust(10)
+		print "Short GC:    Count = " + shortgccount.ljust(8) + " Total time = " + shortgctime + " secs".ljust(10) + " Average time = " + shortgcavg + " secs".ljust(10) + " Longest GC = " + longestshortgc + " secs".ljust(8)
+		print "Full GC:     Count = " + fullgccount.ljust(8) + " Total time = " + fullgctime + " secs".ljust(10) + " Average time = " + fullgcavg + " secs".ljust(10) + " Longest GC = " + longestfullgc + " secs".ljust(8)
+		print
 
 
 parser = argparse.ArgumentParser(description='Calculate the GC efficency for Java GC logs.')
@@ -98,7 +107,7 @@ args = parser.parse_args()
 #print args.accumulate(args.integers)
 
 if args.csv:
-	print "log;efficency;apptime;totalgccount;totalgctime;totalgcavg;shortgccount;shortgctime;shortgcavg;fullgccount;fullgctime;fullgcavg;"
+	print "log;efficency;apptime;totalgccount;totalgctime;totalgcavg;shortgccount;shortgctime;shortgcavg;longestshortgc;fullgccount;fullgctime;fullgcavg;longestfullgc"
 
 for log in args.logs:
 	if os.path.exists(log):
