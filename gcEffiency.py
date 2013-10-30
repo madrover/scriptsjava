@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+
+#
+# This script is used calculate the efficiency of the Garbage Collector.
+# It analyzes the input java garbage collector and calculates how much time the JVM is spending doing garbage collection
+# This script can be used to define a garbage collection baseline and to find how different tuning are affecting its effiency
+#
 import sys, os
 import argparse
 
