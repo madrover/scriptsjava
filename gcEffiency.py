@@ -73,22 +73,12 @@ def analyzeLog(log):
 		print log + ";" + efficency + ";" + apptime + ";" + totalgccount + ";" + totalgctime + ";" + totalgcavg + ";" + shortgccount + ";" + shortgctime + ";" + shortgcavg + ";" + fullgccount + ";" + fullgctime + ";" + fullgcavg + ";"
 
 	else:
-		print log
-		print "Application execution time = " + apptime
-		print "Efficency = " + efficency
-		print "Total GC"
-		print "	Count = " + totalgccount
-		print "	Total time = " + totalgctime
-		print "	Average time = " + totalgcavg
-		print "Short GC"
-		print "	Count = " + shortgccount
-		print "	Total time = " + shortgctime
-		print "	Average time = " + shortgcavg
-		print "Full GC"
-		print "	Count = " + fullgccount
-		print "	Total time = " + fullgctime
-		print "	Average time = " + fullgcavg
-		print
+		print "Log: " + log
+		print "Application execution time = " + apptime + " secs"
+		print "Efficency = " + efficency + "%"
+		print "Total GC:    Count = " + totalgccount.ljust(8) + " Total time = " + totalgctime + " secs".ljust(8) + " Average time = " + totalgcavg + " secs".ljust(8)
+		print "Short GC:    Count = " + shortgccount.ljust(8) + " Total time = " + shortgctime + " secs".ljust(8) + " Average time = " + shortgcavg + " secs".ljust(8)
+		print "Full GC:     Count = " + fullgccount.ljust(8) + " Total time = " + fullgctime + " secs".ljust(8) + " Average time = " + fullgcavg + " secs".ljust(8)
 
 
 parser = argparse.ArgumentParser(description='Calculate the GC efficency for Java GC logs.')
